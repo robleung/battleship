@@ -8,104 +8,66 @@ function Gameboard() {
     }
   }
   const placeShip = (ship, origin, direction) => {
-    if (isLocationValid(origin, direction, ship.length)) {
-      placeMarker(origin, direction, ship.length, ship.marker);
+    let positions = shipPositions(ship.length, origin, direction);
+    if (isLocationValid(positions) && isLocationAvailable(positions)) {
+      placeMarker(ship.marker, positions);
     }
   };
-  const recieveAttack = (x, y) => {
-    //check if attacked status is false in the board
-    // if there is no ship identifier, missed attack
-    // if there is an identifier, increase ships hit count
+  const recieveAttack = (coordinates) => {
+    if (isLocationValid(coordinates) && isLocationNew(coordinates)) {
+    }
   };
-  const isLocationValid = (origin, direction, distance) => {
-    //check if location is valid and unoccupied
-
+  const shipPositions = (distance, origin, direction) => {
+    let pos = [];
     switch (direction) {
       case "n":
-        for (let i = 0; i < array.length; i++) {
-          if (
-            origin[0] >= 0 &&
-            origin[0] < 10 &&
-            origin[1] + i >= 0 &&
-            origin[1] + i < 10 &&
-            board[origin[0]][origin[1] + i].shipIdentifier === null &&
-            board[origin[0]][origin[1] + i].attackedStatus === false
-          ) {
-            return true;
-          }
-          return false;
+        for (let i = 0; i < distance; i++) {
+          positions.push([origin[0]][origin[1] + i]);
         }
+        break;
       case "e":
-        for (let i = 0; i < array.length; i++) {
-          if (
-            origin[0] + i >= 0 &&
-            origin[0] + i < 10 &&
-            origin[1] >= 0 &&
-            origin[1] < 10 &&
-            board[origin[0] + i][origin[1]].shipIdentifier === null &&
-            board[origin[0] + i][origin[1]].attackedStatus === false
-          ) {
-            return true;
-          }
-          return false;
+        for (let i = 0; i < distance; i++) {
+          positions.push([origin[0] + i][origin[1]]);
         }
+        break;
       case "s":
-        for (let i = 0; i < array.length; i++) {
-          if (
-            origin[0] >= 0 &&
-            origin[0] < 10 &&
-            origin[1] - i >= 0 &&
-            origin[1] - i < 10 &&
-            board[origin[0]][origin[1] - i].shipIdentifier === null &&
-            board[origin[0]][origin[1] - i].attackedStatus === false
-          ) {
-            return true;
-          }
-          return false;
+        for (let i = 0; i < distance; i++) {
+          positions.push([origin[0]][origin[1] - i]);
         }
+        break;
       case "w":
-        for (let i = 0; i < array.length; i++) {
-          if (
-            origin[0] - i >= 0 &&
-            origin[0] - i < 10 &&
-            origin[1] >= 0 &&
-            origin[1] < 10 &&
-            board[origin[0] - i][origin[1]].shipIdentifier === null &&
-            board[origin[0] - i][origin[1]].attackedStatus === false
-          ) {
-            return true;
-          }
-          return false;
+        for (let i = 0; i < distance; i++) {
+          positions.push([origin[0] - i][origin[1]]);
         }
+        break;
       default:
+        break;
+    }
+    return pos;
+  };
+
+  const isLocationValid = (...pos) => {
+    //check if location is valid
+    for (let i = 0; i < pos.length; i++) {
+      if (pos[0] < 0 || pos[0] > 10 || pos[1] < 0 || pos[1] > 10) {
         return false;
+      }
     }
+    return true;
+  };
+  const isLocationAvailable = (...pos) => {
+    //check if location is available
+    for (let i = 0; i < pos.length; i++) {
+      if (board[pos[i][0]][pos[i][1]].shipIdentifier !== null) {
+        return false;
+      }
+    }
+    return true;
   };
 
-  const placeMarker = (origin, direction, distance, marker) => {
-    switch (direction) {
-      case "n":
-        for (let i = 0; i < distance; i++) {
-          board[origin[0]][origin[1] + i] = marker;
-        }
-        break;
-      case "e":
-        for (let i = 0; i < distance; i++) {
-          board[origin[0] + i][origin[1]] = marker;
-        }
-        break;
-      case "s":
-        for (let i = 0; i < distance; i++) {
-          board[origin[0]][origin[1] - i] = marker;
-        }
-        break;
-      case "w":
-        for (let i = 0; i < distance; i++) {
-          board[origin[0] - i][origin[1]] = marker;
-        }
-        break;
-      default:
-        break;
+  const placeMarker = (marker, ...pos) => {
+    for (let i = 0; i < pos.length; i++) {
+      board[pos[i][0]][pos[i][1]].shipIdentifier = marker;
     }
   };
 
