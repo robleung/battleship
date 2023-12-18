@@ -15,7 +15,7 @@ function Ship(name) {
     return hitCount == length ? true : false;
   };
 
-  return { length, getHits, hit, isSunk };
+  return { length, getHits, hit, isSunk, marker };
 }
 
 export default Ship;

@@ -1,4 +1,6 @@
-import { shipLookup } from "./shipLookup";
+import { shipLookup, getKeyByValue } from "./shipLookup";
+
+import Ship from "./ship";
 
 function Gameboard() {
   let board = [];
@@ -7,6 +9,14 @@ function Gameboard() {
       board[i][j] = { shipIdentifier: null, attackedStatus: false };
     }
   }
+  let ships = {
+    carrier: Ship("carrier"),
+    battleship: Ship("battleship"),
+    cruiser: Ship("cruiser"),
+    submarine: Ship("submarine"),
+    destroyer: Ship("destroyer"),
+  };
+
   const placeShip = (ship, origin, direction) => {
     let positions = shipPositions(ship.length, origin, direction);
     if (isLocationValid(positions) && isLocationAvailable(positions)) {
@@ -15,8 +25,18 @@ function Gameboard() {
   };
   const recieveAttack = (coordinates) => {
     if (isLocationValid(coordinates) && isLocationNew(coordinates)) {
+      processAttack(coordinates);
     }
   };
+  const areShipsSunk = () => {
+    for (const [key, value] of Object.entries(ships)) {
+      if (isShipSunk(key)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const shipPositions = (distance, origin, direction) => {
     let pos = [];
     switch (direction) {
@@ -69,6 +89,30 @@ function Gameboard() {
     for (let i = 0; i < pos.length; i++) {
       board[pos[i][0]][pos[i][1]].shipIdentifier = marker;
     }
+  };
+
+  const isLocationNew = (...pos) => {
+    //check if location has not be attacked yet
+    for (let i = 0; i < pos.length; i++) {
+      if (board[pos[i][0]][pos[i][1]].attackedStatus !== false) {
+        return false;
+      }
+    }
+    return true;
+  };
+  const processAttack = (coordinates) => {
+    board[coordinates[0]][coordinates[1]].attackedStatus = true;
+    if (board[coordinates[0]][coordinates[1]].shipIdentifier !== null) {
+      let shipName = getKeyByValue(
+        shipLookup,
+        board[coordinates[0]][coordinates[1]].shipIdentifier
+      );
+      ships[shipName].hit();
+    }
+  };
+
+  const isShipSunk = (name) => {
+    return ships[name].isSunk();
   };
 
   return { board, placeShip, recieveAttack };
