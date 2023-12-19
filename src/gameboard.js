@@ -5,9 +5,14 @@ import Ship from "./ship";
 function Gameboard() {
   let board = [];
   for (let i = 0; i < 10; i++) {
+    let row = [];
     for (let j = 0; j < 10; j++) {
-      board[i][j] = { shipIdentifier: null, attackedStatus: false };
+      row.push({
+        shipIdentifier: null,
+        attackedStatus: false,
+      });
     }
+    board.push(row);
   }
   let ships = {
     carrier: Ship("carrier"),
@@ -42,22 +47,22 @@ function Gameboard() {
     switch (direction) {
       case "n":
         for (let i = 0; i < distance; i++) {
-          positions.push([origin[0]][origin[1] + i]);
+          pos.push([origin[0], origin[1] + i]);
         }
         break;
       case "e":
         for (let i = 0; i < distance; i++) {
-          positions.push([origin[0] + i][origin[1]]);
+          pos.push([origin[0] + i, origin[1]]);
         }
         break;
       case "s":
         for (let i = 0; i < distance; i++) {
-          positions.push([origin[0]][origin[1] - i]);
+          pos.push([origin[0], origin[1] - i]);
         }
         break;
       case "w":
         for (let i = 0; i < distance; i++) {
-          positions.push([origin[0] - i][origin[1]]);
+          pos.push([origin[0] - i, origin[1]]);
         }
         break;
       default:
@@ -115,6 +120,13 @@ function Gameboard() {
     return ships[name].isSunk();
   };
 
-  return { board, placeShip, recieveAttack };
+  return {
+    board,
+    ships,
+    shipPositions,
+    placeShip,
+    recieveAttack,
+    areShipsSunk,
+  };
 }
 export default Gameboard;
