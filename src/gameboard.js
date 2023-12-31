@@ -35,11 +35,11 @@ function Gameboard() {
   };
   const areShipsSunk = () => {
     for (const [key, value] of Object.entries(ships)) {
-      if (isShipSunk(key)) {
-        return true;
+      if (!isShipSunk(key)) {
+        return false;
       }
     }
-    return false;
+    return true;
   };
 
   const shipPositions = (distance, origin, direction) => {
@@ -71,7 +71,7 @@ function Gameboard() {
     return pos;
   };
 
-  const isLocationValid = (...pos) => {
+  const isLocationValid = (pos) => {
     //check if location is valid
     for (let i = 0; i < pos.length; i++) {
       if (pos[0] < 0 || pos[0] > 10 || pos[1] < 0 || pos[1] > 10) {
@@ -80,7 +80,7 @@ function Gameboard() {
     }
     return true;
   };
-  const isLocationAvailable = (...pos) => {
+  const isLocationAvailable = (pos) => {
     //check if location is available
     for (let i = 0; i < pos.length; i++) {
       if (board[pos[i][0]][pos[i][1]].shipIdentifier !== null) {
@@ -90,16 +90,16 @@ function Gameboard() {
     return true;
   };
 
-  const placeMarker = (marker, ...pos) => {
+  const placeMarker = (marker, pos) => {
     for (let i = 0; i < pos.length; i++) {
       board[pos[i][0]][pos[i][1]].shipIdentifier = marker;
     }
   };
 
-  const isLocationNew = (...pos) => {
+  const isLocationNew = (coord) => {
     //check if location has not be attacked yet
-    for (let i = 0; i < pos.length; i++) {
-      if (board[pos[i][0]][pos[i][1]].attackedStatus !== false) {
+    for (let i = 0; i < coord.length; i++) {
+      if (board[coord[0]][coord[1]].attackedStatus !== false) {
         return false;
       }
     }
@@ -123,7 +123,6 @@ function Gameboard() {
   return {
     board,
     ships,
-    shipPositions,
     placeShip,
     recieveAttack,
     areShipsSunk,
