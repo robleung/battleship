@@ -1,5 +1,4 @@
-import Player from "../player";
-import Computer from "../computer";
+import { Player, Computer } from "../player";
 
 let player;
 let computer;
